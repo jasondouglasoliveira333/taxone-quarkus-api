@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import br.com.lkm.taxone.mapper.dto.ScheduleLogStatisticDTO;
@@ -22,7 +23,7 @@ public interface ScheduleLogRepository extends JpaRepository<ScheduleLog, Intege
 	//@Query("select new br.com.lkm.taxone.mapper.dto.ScheduleLogStatisticDTO(sl.status, count(sl.id)) from ScheduleLog sl group by sl.status")
 	//List<ScheduleLogStatisticDTO> groupByStatus();
 
-	@Query("select count(s) Schedule s")//for while
-	int countByScheduleIdAndStatus(Integer scheduleId, ScheduleLogStatus status);
+	@Query("select count(s) from ScheduleLog s where s.schedule.id = :id and s.status = :status")//for while
+	long countByScheduleIdAndStatus(@Param("id") Integer scheduleId, @Param("status") ScheduleLogStatus status);
 
 }

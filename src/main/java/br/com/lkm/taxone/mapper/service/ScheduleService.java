@@ -39,6 +39,7 @@ public class ScheduleService {
 	@Autowired
 	private ScheduleLogRepository scheduleLogRepository;
 
+	@Transactional
 	public PageResponse<ScheduleDTO> list(Pageable pageable) {
 		Page<Schedule> page = scheduleRepository.findByStatus(ScheduleStatus.ACTIVE, pageable);
 		PageResponse<ScheduleDTO> sPage = new PageResponse<>();
@@ -47,11 +48,13 @@ public class ScheduleService {
 		return sPage;
 	}
 
+	@Transactional
 	public ScheduleDTO get(Integer id) {
 		Schedule s = scheduleRepository.getOne(id);
 		return ScheduleConverter.convertWithDetail(s);
 	}
 
+	@Transactional
 	public void save(ScheduleDTO sDTO) {
 		final List<Integer> cDeleted = new ArrayList<>();
 		if (sDTO.getId() != null) {
@@ -59,7 +62,7 @@ public class ScheduleService {
 		}
 		Schedule s = ScheduleConverter.convert(sDTO);
 		if (s.getId() == null) {
-			s.setLastExecution(LocalDateTime.MIN);
+			s.setLastExecution(LocalDateTime.now());
 		}
 		s.setStatus(ScheduleStatus.ACTIVE);
 		scheduleRepository.save(s);
@@ -80,6 +83,7 @@ public class ScheduleService {
 //		scheduleRepository.delete(s);
 //	}
 
+	@Transactional
 	public PeriodeDTO getPeriode(Integer id) {
 		Schedule s = scheduleRepository.getOne(id);
 		PeriodeDTO p = new PeriodeDTO();
@@ -88,8 +92,9 @@ public class ScheduleService {
 		return p;
 	}
 
+	@Transactional
 	public boolean isWaitingTaxoneResponse(Integer scheduleId) {
-		int count = scheduleLogRepository.countByScheduleIdAndStatus(scheduleId, ScheduleLogStatus.SENT);
+		long count = scheduleLogRepository.countByScheduleIdAndStatus(scheduleId, ScheduleLogStatus.SENT);
 		log.info(">>>count:" + count);
 		if (count > 0) {
 			return true;

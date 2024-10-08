@@ -3,7 +3,10 @@ package br.com.lkm.taxone.mapper.dto;
 import br.com.lkm.taxone.mapper.enums.ColumnType;
 import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SAFXColumnUpdateDTO {
 
 	private Integer id;

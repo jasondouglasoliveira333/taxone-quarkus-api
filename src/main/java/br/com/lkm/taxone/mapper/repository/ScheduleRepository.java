@@ -17,8 +17,10 @@ import br.com.lkm.taxone.mapper.enums.ScheduleStatus;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer>{
 
-	@Query("select s from Schedule s") //for while
-	List<Schedule> findByDaysContainingAndLastExecutionLessThanOrDaysAndLastExecutionLessThan(String days, LocalDateTime data, String wildcard, LocalDateTime data2);
+	@Query("select s from Schedule s where (s.days in (:days) and s.lastExecution < :data) or " + 
+			"(s.days = :day and s.lastExecution < :data)") //for while
+	List<Schedule> findByDaysContainingAndLastExecutionLessThanOrDaysAndLastExecutionLessThan(@Param("days") String days, 
+		@Param("data") LocalDateTime data, @Param("day") String wildcard, @Param("data2") LocalDateTime data2);
 
 	@Query("update Schedule s set s.status = :status where s.id = :id")
 	@Modifying

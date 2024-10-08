@@ -18,8 +18,7 @@ public interface SAFXTableRepository extends JpaRepository<SAFXTable, Integer>{
 
 	SAFXTable findByName(String tableName);
 
-	@Query(value="select s from SAFXTable s where (s.name like :name or :name is null) and (:justAssociated = true and dsTable is not null or :justAssociated = false)", 
-		countQuery="select count(s) from SAFXTable s where (s.name like :name or :name is null) and (:justAssociated = true and dsTable is not null or :justAssociated = false)") 
+	@Query("from SAFXTable s where (s.name like :name or :name is null) and (:justAssociated = true and dsTable is not null or :justAssociated = false)") 
 	Page<SAFXTable> findByNameAndAssociated(@Param("name") String name, @Param("justAssociated") Boolean justAssociated, Pageable page);
 
 	@Modifying
