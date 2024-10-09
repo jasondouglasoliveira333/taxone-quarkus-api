@@ -26,6 +26,7 @@ import br.com.lkm.taxone.mapper.repository.ScheduleLogRepository;
 import br.com.lkm.taxone.mapper.repository.ScheduleRepository;
 
 @Service
+@Transactional
 public class ScheduleService {
 	
 	private static final Logger log = LoggerFactory.getLogger(ScheduleService.class);
@@ -39,7 +40,6 @@ public class ScheduleService {
 	@Autowired
 	private ScheduleLogRepository scheduleLogRepository;
 
-	@Transactional
 	public PageResponse<ScheduleDTO> list(Pageable pageable) {
 		Page<Schedule> page = scheduleRepository.findByStatus(ScheduleStatus.ACTIVE, pageable);
 		PageResponse<ScheduleDTO> sPage = new PageResponse<>();
@@ -48,13 +48,11 @@ public class ScheduleService {
 		return sPage;
 	}
 
-	@Transactional
 	public ScheduleDTO get(Integer id) {
 		Schedule s = scheduleRepository.getOne(id);
 		return ScheduleConverter.convertWithDetail(s);
 	}
 
-	@Transactional
 	public void save(ScheduleDTO sDTO) {
 		final List<Integer> cDeleted = new ArrayList<>();
 		if (sDTO.getId() != null) {
@@ -83,7 +81,6 @@ public class ScheduleService {
 //		scheduleRepository.delete(s);
 //	}
 
-	@Transactional
 	public PeriodeDTO getPeriode(Integer id) {
 		Schedule s = scheduleRepository.getOne(id);
 		PeriodeDTO p = new PeriodeDTO();
@@ -92,7 +89,6 @@ public class ScheduleService {
 		return p;
 	}
 
-	@Transactional
 	public boolean isWaitingTaxoneResponse(Integer scheduleId) {
 		long count = scheduleLogRepository.countByScheduleIdAndStatus(scheduleId, ScheduleLogStatus.SENT);
 		log.info(">>>count:" + count);
@@ -102,7 +98,6 @@ public class ScheduleService {
 		return false;
 	}
 
-	@Transactional
 	public void updateStatus(Integer scheduleId, ScheduleStatus status) {
 		scheduleRepository.updateStatus(scheduleId, status);
 	}
